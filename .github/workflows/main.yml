@@ -1,0 +1,56 @@
+name: Mi primer Pipeline
+
+on:
+  # Ejecutar cada que se realice un push
+  push:
+    branches:
+    - main
+    - release/*
+  pull_request:
+    types: [opened, synchronize, reopened, review_requested]
+    branches:
+    - main
+    
+  # Ejecutar de manera programada
+  schedule:
+  - cron: "0 2 * * 1-5"
+  
+  # Permitir ejecutar manualmente 
+  workflow_dispatch:  
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Realizamos un checkout a la rama
+        uses: actions/checkout@v2
+
+      - name: Usamos Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+            node-version: '20.x'
+
+      - name: Instalamos dependencias y realizamos el build
+        run:  |
+          npm install
+          npm run build --if-present
+
+      - name: Corremos el linter 
+        run: npm run lint
+
+      - name: Corremos las pruebas unitarias y de integración con su covertura
+        run: npm run test:cov
+
+      - name: Corremos las pruebas end-to-end
+        run: npm run test:e2e
+
+      - name: Actualizamos el artefacto con el reporte de covertura de los tests
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+          if-no-files-found: error 
+  
+  
