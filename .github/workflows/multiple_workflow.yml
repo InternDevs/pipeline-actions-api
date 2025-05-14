@@ -1,0 +1,18 @@
+name: Creando un workflow
+
+on:
+  workflow_run:
+    workflows: ['Mi primer Pipeline']
+    types: [completed]
+
+jobs:
+  exitoso:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo 'El workflow Mi primer Pipeline fue completado'
+  fallo:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'El workflow Mi primer Pipeline ha fallado'
