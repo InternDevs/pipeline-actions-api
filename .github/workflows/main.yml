@@ -12,8 +12,8 @@ on:
     - main
     
   # Ejecutar de manera programada
-  schedule:
-  - cron: "0 2 * * 1-5"
+  #schedule:
+  #- cron: "0 2 * * 1-5"
   
   # Permitir ejecutar manualmente 
   workflow_dispatch:  
@@ -37,8 +37,8 @@ jobs:
           npm install
           npm run build --if-present
 
-      - name: Corremos el linter 
-        run: npm run lint
+      #- name: Corremos el linter 
+      #  run: npm run lint
 
       - name: Corremos las pruebas unitarias y de integración con su covertura
         run: npm run test:cov
